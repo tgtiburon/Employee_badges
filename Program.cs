@@ -5,10 +5,12 @@ namespace CatWorx.BadgeMaker
 {
     class Program
     {   
+        // GetEmployees returns a List of Employee Objects
 
-        static List<string> GetEmployees() 
+        static List<Employee> GetEmployees() 
         {
-            List<string> employees = new List<string>();
+            // List of employee objects
+            List<Employee> employees = new List<Employee>();
             while (true) 
             {
                 Console.WriteLine("Please enter a name: (leave empty to exit): ");
@@ -17,10 +19,17 @@ namespace CatWorx.BadgeMaker
                 {
                     break;
                 }
+                // Add a console.readline for each value
+                Console.Write("Enter last name: " );
+                string lastName = Console.ReadLine();
+                Console.Write("Enter ID: ");
+                int id = Int32.Parse(Console.ReadLine());
+                Console.Write("Enter Photo Url: ");
+                string photoUrl = Console.ReadLine();
                 // Create a new Employee instance
-                Employee currentEmployee = new Employee(input, "Smith");
+                Employee currentEmployee = new Employee(input, lastName, id, photoUrl); 
                
-                employees.Add(currentEmployee.GetName());
+                employees.Add(currentEmployee);
             
 
 
@@ -28,14 +37,8 @@ namespace CatWorx.BadgeMaker
             return employees;
         }
 
-        static void PrintEmployees(List<string> employees)
-        {
-            for (int i = 0; i < employees.Count; i++) 
-            {
-                Console.WriteLine(employees[i]);
-            }
-            
-        }
+
+       
 
 
         // Main is entry point
@@ -46,8 +49,9 @@ namespace CatWorx.BadgeMaker
         {
           // This is our employee getting code now
           // will return a List of strings
-          List<string> employees = GetEmployees();
-          PrintEmployees(employees);
+          List<Employee> employees = GetEmployees();
+          Util.PrintEmployees(employees);
+          Util.MakeCSV(employees);
         }
     
     }// end of Class Program
