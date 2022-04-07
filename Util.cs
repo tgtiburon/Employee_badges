@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Drawing;
+using System.Net;
 
 
 namespace CatWorx.BadgeMaker
@@ -51,6 +53,67 @@ namespace CatWorx.BadgeMaker
                 }
             }
 
+        }// end MakeCSV
+
+        // Public must be accessable by Main() method
+        // void creates a file, no need to return
+        // static scoped to class so it can be invoked directly without instantiating an object
+        // List<Employee> so we can pass employee list
+        public static void MakeBadges(List<Employee> employees)
+        {
+            // Layout Variables
+            int BADGE_WIDTH = 669;
+            int BADGE_HEIGHT = 1044;
+
+            int COMPANY_NAME_START_X = 0;
+            int COMPANY_NAME_START_Y = 110;
+            int COMPANY_NAME_WIDTH = 100;
+
+            int PHOTO_START_X = 184;
+            int PHOTO_START_Y = 215;
+            int PHOTO_WIDTH = 302;
+            int PHOTO_HEIGHT = 302;
+
+            int EMPLOYEE_NAME_START_X = 0;
+            int EMPLOYEE_NAME_START_Y = 560;
+            int EMPLOYEE_NAME_WIDTH = BADGE_WIDTH;
+            int EMPLOYEE_NAME_HEIGHT = 100;
+
+            int EMPLOYEE_ID_START_X = 0;
+            int EMPLOYEE_ID_START_Y = 690;
+            int EMPLOYEE_ID_WIDTH = BADGE_WIDTH;
+            int EMPLOYEE_ID_HEIGHT = 100;
+
+
+            //
+            using(WebClient client = new WebClient())
+            {
+                for (int i = 0; i < employees.Count; i++)
+                {
+                    // Convert the photo URL into a readable Stream of data
+                    // we can create an image from this stream
+                    Stream employeeStream = client.OpenRead(employees[i].GetPhotoUrl());
+                    // Make photo image from the stream
+                    Image photo = Image.FromStream(employeeStream);
+                    // We could combine into
+                    //  Image photo = Image.FromStream(client.OpenRead(employees[i].GetPhotoUrl()));
+                    Image background = Image.FromFile("badge.png");
+                   // background.Save("data/employeeBadge.png");
+                   Image badge = new Bitmap(BADGE_WIDTH, BADGE_HEIGHT);
+                   // Create graphics object from the image so 
+                   // we can manipulate it
+                   Graphics graphic = Graphics.FromImage(badge);
+                   // Insert badge template
+                   graphic.DrawImage(background, new Rectangle(0,0,BADGE_WIDTH, BADGE_HEIGHT));
+                   // Insert employee photo
+                   graphic.DrawImage(photo, new Rectangle(PHOTO_START_X, PHOTO_START_Y, PHOTO_WIDTH, PHOTO_HEIGHT ));
+                   // Save the badge
+                   badge.Save("data/employeeBadge.png");
+
+    
+                }
+            }
+        
         }
 
      }// end Class Util
